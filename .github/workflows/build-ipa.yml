@@ -11,6 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug files
+        run: |
+          echo "=== pwd ==="
+          pwd
+          echo "=== ls -la ==="
+          ls -la
+          echo "=== ls -la Sources ==="
+          ls -la Sources || true
+          echo "=== cat project.yml ==="
+          cat project.yml
+          echo "=== hexdump project.yml ==="
+          hexdump -C project.yml | head -20
+          echo "=== xcodegen version ==="
+          xcodegen version || true
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
