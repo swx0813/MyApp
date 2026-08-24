@@ -29,10 +29,11 @@ jobs:
           echo "Found xcodegen at: $XCODEGEN_BIN"
           chmod +x "$XCODEGEN_BIN"
           "$XCODEGEN_BIN" --version
-          echo "XCODEGEN_BIN=$XCODEGEN_BIN" >> $GITHUB_ENV
+          sudo mkdir -p /usr/local/bin
+          sudo cp "$XCODEGEN_BIN" /usr/local/bin/xcodegen
 
       - name: Generate Xcode project
-        run: "$XCODEGEN_BIN" generate
+        run: xcodegen generate
 
       - name: Build archive
         run: |
