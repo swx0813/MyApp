@@ -19,8 +19,6 @@ jobs:
           ls -la Sources
           echo "=== project.yml raw ==="
           cat -vet project.yml
-          echo "=== project.yml parsed ==="
-          python3 -c "import yaml; import json; print(json.dumps(yaml.safe_load(open('project.yml')), indent=2))"
 
       - name: Install XcodeGen 2.35.0
         run: |
