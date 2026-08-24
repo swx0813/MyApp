@@ -7,7 +7,4 @@ targets:
     platform: iOS
     deploymentTarget: "15.0"
     sources:
-      - Sources
-    info:
-      properties:
-        UILaunchScreen: {}
+      - path: Sources
