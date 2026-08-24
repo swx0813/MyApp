@@ -11,41 +11,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug files
+      - name: Show environment
         run: |
-          echo "=== pwd ==="
-          pwd
-          echo "=== ls -la ==="
-          ls -la
-          echo "=== ls -la Sources ==="
-          ls -la Sources || true
-          echo "=== cat project.yml ==="
-          cat project.yml
-          echo "=== hexdump project.yml ==="
-          hexdump -C project.yml | head -20
-          echo "=== xcodegen version ==="
-          xcodegen version || true
+          xcodebuild -version
+          swift --version
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Resolve package
+        run: swift package resolve
 
-      - name: Generate Xcode project
-        run: xcodegen generate
-
-      - name: Build archive (no signing)
+      - name: Build
         run: |
-          xcodebuild archive \
-            -scheme MyApp \
-            -sdk iphoneos \
-            -archivePath build/MyApp.xcarchive \
+          xcodebuild -scheme MyApp \
+            -destination 'generic/platform=iOS' \
+            -configuration Release \
+            -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY=""
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Locate app
+        run: |
+          APP_PATH=$(find build/DerivedData -name "MyApp.app" -type d | head -1)
+          echo "APP_PATH=$APP_PATH"
+          ls -la "$APP_PATH"
 
       - name: Package IPA
         run: |
+          APP_PATH=$(find build/DerivedData -name "MyApp.app" -type d | head -1)
           mkdir -p build/Payload
-          cp -r build/MyApp.xcarchive/Products/Applications/MyApp.app build/Payload/
+          cp -r "$APP_PATH" build/Payload/
           cd build && zip -r MyApp.ipa Payload
 
       - name: Upload IPA
