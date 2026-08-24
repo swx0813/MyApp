@@ -24,11 +24,15 @@ jobs:
         run: |
           set -e
           curl -L --fail -o /tmp/xcodegen.zip https://github.com/yonaskolb/XcodeGen/releases/download/2.35.0/xcodegen.zip
-          unzip -q /tmp/xcodegen.zip -d /tmp/xcodegen
-          /tmp/xcodegen/bin/xcodegen --version
+          unzip -q /tmp/xcodegen.zip -d /tmp/xcodegen_extracted
+          XCODEGEN_BIN=$(find /tmp/xcodegen_extracted -name xcodegen -type f | head -1)
+          echo "Found xcodegen at: $XCODEGEN_BIN"
+          chmod +x "$XCODEGEN_BIN"
+          "$XCODEGEN_BIN" --version
+          echo "XCODEGEN_BIN=$XCODEGEN_BIN" >> $GITHUB_ENV
 
       - name: Generate Xcode project
-        run: /tmp/xcodegen/bin/xcodegen generate
+        run: "$XCODEGEN_BIN" generate
 
       - name: Build archive
         run: |
