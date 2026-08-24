@@ -17,8 +17,6 @@ jobs:
           ls -la
           echo "=== Sources ==="
           ls -la Sources
-          echo "=== project.yml raw ==="
-          cat -vet project.yml
 
       - name: Install XcodeGen 2.35.0
         run: |
@@ -35,7 +33,7 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Build archive
+      - name: Build (no signing)
         run: |
           set -e
           xcodebuild -project MyApp.xcodeproj \
@@ -43,16 +41,16 @@ jobs:
             -sdk iphoneos \
             -configuration Release \
             -destination 'generic/platform=iOS' \
-            -archivePath build/MyApp.xcarchive \
+            CONFIGURATION_BUILD_DIR=build/Release-iphoneos \
             CODE_SIGNING_ALLOWED=NO \
-            archive
+            build
 
       - name: Package IPA
         run: |
           set -e
-          ls -R build/MyApp.xcarchive/Products/Applications/
+          ls -la build/Release-iphoneos/
           mkdir -p build/Payload
-          cp -r build/MyApp.xcarchive/Products/Applications/MyApp.app build/Payload/
+          cp -r build/Release-iphoneos/MyApp.app build/Payload/
           cd build && zip -r MyApp.ipa Payload
 
       - name: Upload IPA

@@ -8,3 +8,5 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - path: Sources
+    info:
+      path: Sources/Info.plist
