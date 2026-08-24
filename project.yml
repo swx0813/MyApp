@@ -1,7 +1,13 @@
 name: MyApp
-options:/n  bundleIdPrefix: com.example
-targets:/n  MyApp:/n    type: application
+options:
+  bundleIdPrefix: com.example
+targets:
+  MyApp:
+    type: application
     platform: iOS
     deploymentTarget: "15.0"
-    sources:/n      - path: Sources
-    info:/n      properties:/n        UILaunchScreen: {}
+    sources:
+      - path: Sources
+    info:
+      properties:
+        UILaunchScreen: {}
